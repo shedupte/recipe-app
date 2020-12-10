@@ -9,11 +9,11 @@ function App() {
 
   const [recipes, setRecipes] = useState([]);
   const [search, setSearch] = useState("");
-  const [query, setQuery] = useState("chicken")
+  const [query, setQuery] = useState("food");
 
-  useEffect(()=>{
-    getRecipes();
-  },[]);
+ useEffect( () =>{
+  getRecipes();
+ },[query]);
 
   const getRecipes = async () => {
     const response = await fetch(`https://api.edamam.com/search?q=${query}&app_id=${APP_ID}&app_key=${APP_KEY}`)
@@ -25,24 +25,34 @@ function App() {
   const updateSearch = e =>{
     setSearch(e.target.value);
     console.log(search);
+    //@@TODO
+    //setSearch(""); Need to clear search bar once search button clicked
+  }
+
+  const getSearch = e => {
+    e.preventDefault();
+    setQuery(search);
   }
 
   return (
     <div className="App">
-      <form className="search-form">
+      <form className="search-form" onSubmit={getSearch} >
         <input className="search-bar" type="text" value={search} onChange={updateSearch}/>
         <button className="search-button" type="submit">
           Search
         </button>
       </form>
+      <div className="recipes">
       {recipes.map(recipe =>(
           <Recipe 
           key={recipe.recipe.label}
           title={recipe.recipe.label} 
           calorie={recipe.recipe.calories} 
           image={recipe.recipe.image}
+          ingredients={recipe.recipe.ingredients}
           />
       ))}
+      </div>
     </div>
   );
 }
